@@ -1,6 +1,6 @@
-# Aleo Anonymous Survey.
+# Aleo Anonymous Survey
 
-### Getting Started
+## Getting Started
 
 First, run the development server:
 
