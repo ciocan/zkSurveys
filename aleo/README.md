@@ -1,11 +1,11 @@
-# AnonymousSurvey.aleo
+# zk_surveys.aleo
 
 ## Run Guide
 
 To run this program, run:
 
 ```bash
-leo run AnonymousSurvey
+leo run zk_surveys
 ```
 
 ## Execute Guide
@@ -13,9 +13,9 @@ leo run AnonymousSurvey
 To execute this program, run:
 
 ```bash
-leo execute AnonymousSurvey
+leo execute zk_surveys
 ```
 
 ## Overview
 
-It takes the input data from `inputs/AnonymousSurvey.in`
+It takes the input data from `inputs/zk_surveys.in`
