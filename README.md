@@ -1,4 +1,4 @@
-# Aleo Anonymous Survey
+# Aleo zkSurveys
 
 ## Getting Started
 

@@ -5,6 +5,21 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@demox-labs/aleo-sdk':
+    specifier: ^0.3.24
+    version: 0.3.24
+  '@demox-labs/aleo-wallet-adapter-base':
+    specifier: ^0.0.19
+    version: 0.0.19
+  '@demox-labs/aleo-wallet-adapter-leo':
+    specifier: ^0.0.18
+    version: 0.0.18
+  '@demox-labs/aleo-wallet-adapter-react':
+    specifier: ^0.0.18
+    version: 0.0.18(react@18.2.0)
+  '@demox-labs/aleo-wallet-adapter-reactui':
+    specifier: ^0.0.30
+    version: 0.0.30(react-dom@18.2.0)(react@18.2.0)
   next:
     specifier: 13.5.6
     version: 13.5.6(react-dom@18.2.0)(react@18.2.0)
@@ -65,6 +80,44 @@ packages:
     dependencies:
       regenerator-runtime: 0.14.0
     dev: true
+
+  /@demox-labs/aleo-sdk@0.3.24:
+    resolution: {integrity: sha512-XTissTTJdQS8qmTWg5VKagsomh9/D+JURpVksgiz4Z1rUuFf7f1MfyYuXBElL2liVfq45Q9C+g9l2mbE3K44Pg==}
+    dev: false
+
+  /@demox-labs/aleo-wallet-adapter-base@0.0.19:
+    resolution: {integrity: sha512-D43kBh0WWYC9AfCM23ofMNRA5PBuQJ3D14JvO/GWrZP2HBdfquTJzy7M4cLaUQP92ge1N5cTdKF/DPVnqP5iWA==}
+    dependencies:
+      eventemitter3: 4.0.7
+    dev: false
+
+  /@demox-labs/aleo-wallet-adapter-leo@0.0.18:
+    resolution: {integrity: sha512-+x0oJhS32LOQseDm8+/16H3qnQ8kkQx7xlyCLAh/3TOL5Fo8n0oHf60NgYlQi6jxBIJdIwBWNFJ4T4nBl+oLiA==}
+    dependencies:
+      '@demox-labs/aleo-wallet-adapter-base': 0.0.19
+      nanoid: 4.0.2
+    dev: false
+
+  /@demox-labs/aleo-wallet-adapter-react@0.0.18(react@18.2.0):
+    resolution: {integrity: sha512-bit3vR+K/jeO4RZebm6TnU4QeihfWZzDVo/vsfMJHUZfSDnzP0ZBVKQZcYBmtPvXWB9hFI9JPpxWPlp0pf0ZKw==}
+    peerDependencies:
+      react: ^18.2.0
+    dependencies:
+      '@demox-labs/aleo-wallet-adapter-base': 0.0.19
+      react: 18.2.0
+    dev: false
+
+  /@demox-labs/aleo-wallet-adapter-reactui@0.0.30(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-2hR0pKopzd7A1cbFarKs1r9SUmc/vrc5vEzPxzV3E45Xa4/be/3A8HjL19rZslkq4QV2S2TEbpI+noXMgFmOZw==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@demox-labs/aleo-wallet-adapter-base': 0.0.19
+      '@demox-labs/aleo-wallet-adapter-react': 0.0.18(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.52.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -1154,6 +1207,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /eventemitter3@4.0.7:
+    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+    dev: false
+
   /fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
     dev: true
@@ -1776,6 +1833,12 @@ packages:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+
+  /nanoid@4.0.2:
+    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
