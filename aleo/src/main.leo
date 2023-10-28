@@ -1,77 +1,72 @@
 program zk_surveys.aleo {
 
-    // Survey object container
-    struct SurveyData {
-        proposer: address,  // account
-        title: field,       // text -> how do we set this as string from the frontend ui?
-        expires: u64        // timestamp -> how do we check this timestamp against local date on chain? oracol date?
-                            // use blocknumber?
-        q1: field,
-        q2: field,
-        q3: field,
-        q4: field,
-        q5: field,
-        q6: field,
-        q7: field,
-        q8: field,
-        q9: field,
-        q10: field,
-    }
-
-    // surveyID => data
-    mapping Surveys: field => SurveyData
-
-    // Survey record to store survey data privately
-    record Survey {
+    // Store survey ownership data privately
+    record survey {
         owner: address,
-        ID: field,
-        data: SurveyData
+        ID: u64,
     }
+
+    // ID => number of questions
+    mapping survey_questions : u64 => u8;
 
     // Create a survey
-    transition CreateSurvey(public info: SurveyData) -> Survey {
-
-        // Authenticate
-        assert_eq(self.caller, info.proposer);
-
-        // Generate survey ID
-        let ID: field = BHP256::hash_to_field(info.title);
+    transition create_survey(ID: u64, questions: u8) -> survey {
+        assert(questions != 0u8);
+        assert(questions < 11u8);
 
         // Return a new record for the survey and finalize
-        return Survey {
+        return survey {
             owner: self.caller,
-            ID,
-            info,
-        } then finalize(ID);
+            ID
+        } then finalize(ID, questions);
     }
 
-    // Finalize a new survey (key) in the Tickets mapping
-    finalize CreateSurvey(public ID: field) {
-        Mapping::set(Tickets, ID, 0u64);
-    }
-
-    struct Question {
-        ID: field,          // GUID
-        proposer: address,  // account
-        content: field      // text
+    // Finalize a new survey (by ID as key) in the surveys mapping
+    finalize create_survey(ID: u64, questions: u8) {
+        Mapping::set(survey_questions, ID, questions);
     }
 
     // Voting tickets issued privately
-    record Ticket {
+    record ticket {
         owner: address,
-        surveyID: field
+        surveyID: u64,
+        // questions: u8,
     }
 
-    // struct Answer {
-    //     questionID: field,
-    //     rating: u8,
-    //     ticket: Ticket
-    // }
+    // surveyID => count tickets
+    mapping tickets: u64 => u16;
+
+    // Create a new ticket to vote on a survey
+    transition issue_ticket(survey_record: survey, voter: address) -> (survey, ticket) {
+
+        // Authenticate
+        assert_eq(self.caller, survey_record.owner);
+
+        // Recreate survey (consumed on input), issue ticket
+        return (
+            survey_record,
+            ticket
+            {
+                owner: voter,
+                surveyID: survey_record.ID,
+                // questions: 7u8,
+            }
+        ) then finalize(survey_record.ID);
+    }
+
+    // Create a new ticket in the "tickets" mapping.
+    finalize issue_ticket(surveyID: u64) {
+        Mapping::set(tickets, surveyID, Mapping::get_or_use(tickets, surveyID, 0u16) + 1u16);
+    }
+
+    //                     |    1 - 10     |    1 - 5    |
+    //| pad 48b |   u64    |      u8       |      u8     |
+    //| 000...0 | surveyId | questionIndex | answerIndex | => count
+    mapping answers_table : u128 => u16;
 
     // Uploaded by employee upon survey completion (0 = empty, 1..5 for each answer)
-    struct EmployeeAnswerData
+    struct survey_answer_data
     {
-        surveyID : field,
         a1: u8,
         a2: u8,
         a3: u8,
@@ -84,123 +79,85 @@ program zk_surveys.aleo {
         a10: u8
     }
 
-    // Holds a row with counts of answers of each type for a question (A = 1 ... E = 5)
-    struct AnswerRow
-    {
-        A : u64,
-        B : u64,
-        C : u64,
-        D : u64,
-        E : u64
+    // Submit a set of answers to a survey
+    transition set_answer(ticket_record: ticket, data: survey_answer_data) {
+        return then finalize(ticket_record.surveyID, data);
     }
 
-    // Holds a matrix of all answer counts for each question
-    struct AnswerTable
-    {
-        q1: AnswerRow,
-        q2: AnswerRow,
-        q3: AnswerRow,
-        q4: AnswerRow,
-        q5: AnswerRow,
-        q6: AnswerRow,
-        q7: AnswerRow,
-        q8: AnswerRow,
-        q9: AnswerRow,
-        q10: AnswerRow
-    }
+    // Finalize an answer in the appropriate answers_table mapping
+    finalize set_answer(surveyID : u64, data : survey_answer_data) {
+        let questions : u8 = Mapping::get_or_use(survey_questions, surveyID, 0u8);
 
-    // surveyID => counts
-    mapping Answers: field => AnswerTable
+        assert(questions != 0u8);
 
-    // mapping surveyID: field => AnswerData
+        let rowID : u128 = ((surveyID as u128) << 16u8);
 
-    // // Count the total tickets issued for each survey
-    // // surveyID => ticket count
-    // mapping Tickets: field => u64;
+        assert(data.a1 < 6u8 && data.a1 >= 0u8);
 
-    // // 0000 | surveyId | questionId | answerId => count
-    // mapping votes: u64 => u16;
+        rowID += (256u128 + (data.a2 as u128));
+        Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
 
-    // // Add question to a survey
-    // transition AddQuestion(public survey: SurveyData) -> Survey {
-    //     // Authenticate
-    //     assert_eq(self.caller, survey.proposer);
+        if (questions == 2u8) {
+            assert(data.a2 < 6u8 && data.a2 >= 0u8);
 
-    //     // Generate survey ID
-    //     let ID: field = BHP256::hash_to_field(info.title);
-
-    //     // Return a new record for the survey and finalize
-    //     return Survey {
-    //         owner: self.caller,
-    //         ID,
-    //         info,
-    //     } then finalize(ID);
-    // }
-
-    // // Finalize a new survey (key) in the Tickets mapping
-    // finalize AddQuestion(public ID: field) {
-    //     Mapping::set(Tickets, ID, 0u64);
-    // }
-
-    // TODO: How to authorize this -- query for surveyID and check the owner???
-    // Create a new ticket to vote on a survey
-    transition IssueTicket(public surveyID: field, public voter: address) -> Ticket {
-
-        // Authenticate
-        assert_eq(self.caller, surveyID.owner);
-
-        // Finalize ticket
-        return Ticket {
-            surveyID,
-            owner: voter,
-        };// then finalize(surveyID);
-    }
-
-    // // Finalize a new ticket on a survey in the Tickets mapping
-    // finalize IssueTicket(public surveyID: field) {
-    //     let current: u64 = Mapping::get_or_use(Tickets, surveyID, 0u64);
-    //     Mapping::set(Tickets, surveyID, current + 1u64);
-    // }
-
-    // Submit an answer to a question
-    transition Answer(public data: EmployeeAnswerData) {
-        assert(data.a1 < 6 && data.a1 >= 0);
-        assert(data.a2 < 6 && data.a2 >= 0);
-        assert(data.a3 < 6 && data.a3 >= 0);
-        assert(data.a4 < 6 && data.a4 >= 0);
-        assert(data.a5 < 6 && data.a5 >= 0);
-        assert(data.a6 < 6 && data.a6 >= 0);
-        assert(data.a7 < 6 && data.a7 >= 0);
-        assert(data.a8 < 6 && data.a8 >= 0);
-        assert(data.a9 < 6 && data.a9 >= 0);
-        assert(data.a10 < 6 && data.a10 >= 0);
-
-        return then finalize(data);
-    }
-
-    // Finalize an answer in the appropriate Answer mapping
-    finalize Answer(public data: EmployeeAnswerData) {
-        let table = Mapping::get(Answers, data.surveyID);
-
-        table.q1
-
-        {
-            if      (rating == 1) { table.q1.A += 1; }
-            else if (rating == 2) { table.q1.B += 1; }
-            else if (rating == 3) { table.q1.C += 1; }
-            else if (rating == 4) { table.q1.D += 1; }
-            else if (rating == 5) { table.q1.E += 1; }
+            rowID += (256u128 + (data.a2 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
         }
 
-        // if      (rating == 1) { Mapping::set(AnswerA, questionID, Mapping::get_or_use(AnswerA, questionID, 0u64) + 1); }
-        // else if (rating == 2) { Mapping::set(AnswerB, questionID, Mapping::get_or_use(AnswerB, questionID, 0u64) + 1); }
-        // else if (rating == 3) { Mapping::set(AnswerC, questionID, Mapping::get_or_use(AnswerC, questionID, 0u64) + 1); }
-        // else if (rating == 4) { Mapping::set(AnswerD, questionID, Mapping::get_or_use(AnswerD, questionID, 0u64) + 1); }
-        // else if (rating == 5) { Mapping::set(AnswerE, questionID, Mapping::get_or_use(AnswerE, questionID, 0u64) + 1); }
-    }
+        if (questions == 3u8) {
+            assert(data.a3 < 6u8 && data.a3 >= 0u8);
 
-    transition main(public a: u32, b: u32) -> u32 {
-        let c: u32 = a + b;
-        return c;
+            rowID += (256u128 + (data.a3 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 4u8) {
+            assert(data.a4 < 6u8 && data.a4 >= 0u8);
+
+            rowID += (256u128 + (data.a4 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 5u8) {
+            assert(data.a5 < 6u8 && data.a5 >= 0u8);
+
+            rowID += (256u128 + (data.a5 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 6u8) {
+            assert(data.a6 < 6u8 && data.a6 >= 0u8);
+
+            rowID += (256u128 + (data.a6 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 7u8) {
+            assert(data.a7 < 6u8 && data.a7 >= 0u8);
+
+            rowID += (256u128 + (data.a7 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 8u8) {
+            assert(data.a8 < 6u8 && data.a8 >= 0u8);
+
+            rowID += (256u128 + (data.a8 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 9u8) {
+            assert(data.a9 < 6u8 && data.a9 >= 0u8);
+
+            rowID += (256u128 + (data.a9 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
+
+        if (questions == 10u8) {
+            assert(data.a10 < 6u8 && data.a10 >= 0u8);
+
+            rowID += (256u128 + (data.a10 as u128));
+            Mapping::set(answers_table, rowID, Mapping::get_or_use(answers_table, rowID, 0u16) + 1u16);
+        }
     }
 }
