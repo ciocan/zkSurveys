@@ -7,8 +7,7 @@ survey_record : survey = survey
 {
     owner     : aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn,
     ID        : 123u64,
-    questions : 7u8,
-    _nonce    : 5581652002747086139405865552656543031733591286175926756376461089788768974720group
+    _nonce    : 3110796217445074432514476743421097025707026777779113159663658250799428985825group
 };
 voter : address = aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn;
 
@@ -17,8 +16,7 @@ ticket_record : ticket = ticket
 {
     owner    : aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn,
     surveyID : 123u64,
-    // questions: 7u8,
-    _nonce   : 1048826909176769563815236453638605503249017872621072261366803487521830499023group
+    _nonce   : 3340611966217424284369027411736344705640342011507514830754910876090556505457group
 };
 data : survey_answer_data = survey_answer_data
 {
@@ -33,23 +31,3 @@ data : survey_answer_data = survey_answer_data
     a9  : 0u8,
     a10 : 0u8
 };
-
-// [set_answer]
-// ticket_record : ticket = ticket
-// {
-//     owner    : aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn,
-//     surveyID : 123u64,
-//     answers  : 7u8,
-//     _nonce   : 1048826909176769563815236453638605503249017872621072261366803487521830499023group
-// };
-// question : u8 = 1u8;
-// answer   : u8 = 3u8;
-
-// [set_answer]
-// ticket_record : ticket = ticket
-// {
-//     owner    : aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn,
-//     surveyID : 123u64,
-//     _nonce   : 1048826909176769563815236453638605503249017872621072261366803487521830499023group
-// };
-// answer_record : u128 = 1234321u128;

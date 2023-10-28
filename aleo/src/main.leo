@@ -44,7 +44,11 @@ program zk_surveys.aleo {
 
         // Recreate survey (consumed on input), issue ticket
         return (
-            survey_record,
+            survey
+            {
+                owner : self.caller,
+                ID : survey_record.ID,
+            },
             ticket
             {
                 owner: voter,
