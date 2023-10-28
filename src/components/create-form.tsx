@@ -27,7 +27,7 @@ export function CreateForm() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       title: '',
-      questions: Array.from({ length: totalQuestions }).map(() => ''),
+      questions: [''],
     },
   });
 
@@ -35,6 +35,11 @@ export function CreateForm() {
     if (totalQuestions <= 1) return;
     form.setValue('questions', form.getValues('questions').slice(0, -1));
     incrementQuestions((q) => q - 1);
+  }
+
+  function addQuestion() {
+    form.setValue('questions', [...form.getValues('questions'), '']);
+    incrementQuestions((q) => q + 1);
   }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -84,7 +89,7 @@ export function CreateForm() {
             </Button>
           </div>
         ))}
-        <Button type="button" variant="secondary" onClick={() => incrementQuestions((q) => q + 1)}>
+        <Button type="button" variant="secondary" onClick={addQuestion}>
           +1 more question
         </Button>
         <Button className="w-full">Create</Button>
