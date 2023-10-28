@@ -3,7 +3,7 @@ program zk_surveys.aleo {
     // Store survey ownership data privately
     record survey {
         owner : address,
-        id : u64,
+        id    : u64,
     }
 
     // id => number of questions
@@ -29,12 +29,12 @@ program zk_surveys.aleo {
 
     // Voting tickets issued privately
     record ticket {
-        owner    : address,
+        owner     : address,
         survey_id : u64,
     }
 
     // survey_id => count tickets
-    mapping tickets_active: u64 => u16;
+    mapping tickets_active : u64 => u16;
 
     // Create a new ticket to vote on a survey
     transition issue_ticket(survey_record: survey, voter: address) -> (survey, ticket) {
@@ -51,7 +51,7 @@ program zk_surveys.aleo {
             },
             ticket
             {
-                owner    : voter,
+                owner     : voter,
                 survey_id : survey_record.id,
             }
         ) then finalize(survey_record.id);
