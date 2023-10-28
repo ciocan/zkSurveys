@@ -33,7 +33,7 @@ program zk_surveys.aleo {
         survey_id : u64,
     }
 
-    // surveyID => count tickets
+    // survey_id => count tickets
     mapping tickets_active: u64 => u16;
 
     // Create a new ticket to vote on a survey
@@ -62,9 +62,9 @@ program zk_surveys.aleo {
         Mapping::set(tickets_active, survey_id, Mapping::get_or_use(tickets_active, survey_id, 0u16) + 1u16);
     }
 
-    //                     |    1 - 10     |    1 - 5    |
-    //| pad 48b |   u64    |      u8       |      u8     |
-    //| 000...0 | surveyID | questionIndex | answerIndex | => count
+    //                      |    1 - 10     |    1 - 5    |
+    //| pad 48b |   u64     |      u8       |      u8     |
+    //| 000...0 | survey_id | questionIndex | answerIndex | => count
     mapping answers_table : u128 => u16;
 
     // Uploaded upon survey completion (0 = empty, 1..5 for each answer)
