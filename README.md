@@ -29,3 +29,13 @@ pnpm db:studio # to run the drizzle studio
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 Open [http://localhost:4983](http://localhost:4983) with your browser to see the db studio.
+
+## Development
+
+It uses [shadcn/ui](https://ui.shadcn.com/) library for the ui components and [tailwind](https://tailwindcss.com/) for styling.
+
+To add a new UI component use:
+
+```bash
+pnpm ui:add <component-name>
+```
