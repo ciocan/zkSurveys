@@ -33,6 +33,7 @@ export function CreateForm() {
 
   function deleteQuestion() {
     if (totalQuestions <= 1) return;
+    form.setValue('questions', form.getValues('questions').slice(0, -1));
     incrementQuestions((q) => q - 1);
   }
 
