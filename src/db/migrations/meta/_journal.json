@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1698502675378,
+      "tag": "0000_curved_bill_hollister",
+      "breakpoints": true
+    }
+  ]
+}
