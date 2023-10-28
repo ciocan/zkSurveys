@@ -1,13 +1,13 @@
 [create_survey]
-ID : u64 = 123u64;
+ID        : u64 = 123u64;
 questions : u64 = 7u8;
 
 [issue_ticket]
 survey_record : survey = survey
 {
-    owner     : aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn,
-    ID        : 123u64,
-    _nonce    : 3110796217445074432514476743421097025707026777779113159663658250799428985825group
+    owner  : aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn,
+    ID     : 123u64,
+    _nonce : 3110796217445074432514476743421097025707026777779113159663658250799428985825group
 };
 voter : address = aleo1lpdnpq2dh3486hdjpzlwx6cys8jqzjnjaxhd3ps04j8edjhg559qe79xmn;
 
@@ -20,14 +20,14 @@ ticket_record : ticket = ticket
 };
 data : survey_answer_data = survey_answer_data
 {
-    a1  : 1u8,
-    a2  : 1u8,
-    a3  : 1u8,
-    a4  : 1u8,
-    a5  : 1u8,
-    a6  : 1u8,
-    a7  : 1u8,
-    a8  : 0u8,
-    a9  : 0u8,
-    a10 : 0u8
+    a1  : 1u128,
+    a2  : 1u128,
+    a3  : 1u128,
+    a4  : 1u128,
+    a5  : 1u128,
+    a6  : 1u128,
+    a7  : 1u128,
+    a8  : 0u128,
+    a9  : 0u128,
+    a10 : 0u128
 };
