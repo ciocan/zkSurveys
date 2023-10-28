@@ -7,8 +7,8 @@ import { WalletProvider } from './WalletProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Aleo Anonymous Survey',
-  description: 'Anonymous Survey built for Aleo',
+  title: 'zkSurveys',
+  description: 'Anonymous Surveys built for Aleo',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
