@@ -1,7 +1,7 @@
 program zk_surveys.aleo {
 
     // Store survey ownership data privately
-    record survey {
+    record Survey {
         owner : address,
         id    : u64,
     }
@@ -10,13 +10,13 @@ program zk_surveys.aleo {
     mapping survey_questions : u64 => u8;
 
     // Create a survey
-    transition create_survey(id: u64, questions: u8) -> survey {
+    transition create_survey(id: u64, questions: u8) -> Survey {
 
         assert(questions != 0u8);
         assert(questions < 11u8);
 
         // Return a new record for the survey and finalize
-        return survey {
+        return Survey {
             owner : self.caller,
             id
         } then finalize(id, questions);
@@ -28,7 +28,7 @@ program zk_surveys.aleo {
     }
 
     // Voting tickets issued privately
-    record ticket {
+    record Ticket {
         owner     : address,
         survey_id : u64,
     }
@@ -37,24 +37,24 @@ program zk_surveys.aleo {
     mapping tickets_active : u64 => u16;
 
     // Create a new ticket to vote on a survey
-    transition issue_ticket(survey_record: survey, voter: address) -> (survey, ticket) {
+    transition issue_ticket(survey: Survey, voter: address) -> (Survey, Ticket) {
 
         // Authenticate
-        assert_eq(self.caller, survey_record.owner);
+        assert_eq(self.caller, survey.owner);
 
         // Recreate survey (consumed on input), issue ticket
         return (
-            survey
+            Survey
             {
                 owner : self.caller,
-                id    : survey_record.id,
+                id    : survey.id,
             },
-            ticket
+            Ticket
             {
                 owner     : voter,
-                survey_id : survey_record.id,
+                survey_id : survey.id,
             }
-        ) then finalize(survey_record.id);
+        ) then finalize(survey.id);
     }
 
     // Create a new ticket in the tickets mapping
@@ -82,8 +82,8 @@ program zk_surveys.aleo {
     }
 
     // Submit a set of answers to a survey
-    transition set_answer(ticket_record: ticket, data: SurveyAnswerData) {
-        return then finalize(ticket_record.survey_id, data);
+    transition set_answer(ticket: Ticket, data: SurveyAnswerData) {
+        return then finalize(ticket.survey_id, data);
     }
 
     // Finalize an answer in the appropriate answers_table mapping
