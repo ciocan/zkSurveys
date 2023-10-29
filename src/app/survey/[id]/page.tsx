@@ -22,9 +22,15 @@ export default async function Survey({ params }: { params: { id: string } }) {
       <h1 className="font-bold text-center">{survey.name}</h1>
       <ul className="py-6 space-y-8">
         {questions.map((q, idx) => (
-          <li key={idx} className='space-y-2'>
+          <li key={idx} className="space-y-2">
             <h2>{q}</h2>
-            <Slider defaultValue={[3]} min={1} max={5} step={1} />
+            <div className="flex flex-col gap-2">
+              <Slider defaultValue={[3]} min={1} max={5} step={1} />
+              <div className="flex items-center justify-between text-sm px-2">
+                <span>1</span>
+                <span>5</span>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
