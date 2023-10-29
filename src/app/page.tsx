@@ -2,6 +2,8 @@ import { surveys } from '@/db/schema';
 import { db } from '@/utils/db';
 import Link from 'next/link';
 
+export const revalidate = 0;
+
 async function getSurveys() {
   const result = await db.select().from(surveys).all();
   return result;
