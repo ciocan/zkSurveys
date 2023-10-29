@@ -67,7 +67,7 @@ export function CreateForm() {
         toast({
           title: 'Your survey was created.',
         });
-        router.push(`/surveys/${res.id}`);
+        router.push(`/survey/${res.id}`);
       })
       .catch((err) => {
         console.error(err);

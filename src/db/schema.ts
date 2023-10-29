@@ -1,13 +1,13 @@
-import { sqliteTable, text, integer, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, blob, integer, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
-export type Questions = string[];
+export type Questions = string;
 
 export const surveys = sqliteTable(
   'surveys',
   {
     id: integer('id').primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),
-    questions: text('questions').$type<Questions>().notNull(),
+    questions: blob('questions').$type<Questions>().notNull(),
     owner: text('owner').notNull(),
   },
   (surveys) => ({
