@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1698502675378,
+      "tag": "0000_curved_bill_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1698571339655,
+      "tag": "0001_striped_albert_cleary",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1698573823656,
+      "tag": "0002_colorful_synch",
+      "breakpoints": true
+    }
+  ]
+}
