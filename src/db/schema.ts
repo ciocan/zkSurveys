@@ -11,7 +11,7 @@ export const surveys = sqliteTable(
     owner: text('owner').notNull(),
   },
   (surveys) => ({
-    nameIdx: uniqueIndex('nameIdx').on(surveys.name),
+    nameIdx: uniqueIndex('nameIdx').on(surveys.name, surveys.owner),
   }),
 );
 

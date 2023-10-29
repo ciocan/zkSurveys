@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { X } from 'lucide-react';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -11,8 +13,8 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 
 const FormSchema = z.object({
-  title: z.string().min(10, {
-    message: 'Survey title must be at least 10 characters long.',
+  name: z.string().min(10, {
+    message: 'Survey name must be at least 10 characters long.',
   }),
   questions: z.array(
     z.string().min(10, {
@@ -22,11 +24,14 @@ const FormSchema = z.object({
 });
 
 export function CreateForm() {
+  const router = useRouter();
+  const { publicKey } = useWallet();
   const [totalQuestions, incrementQuestions] = useState(3);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: '',
+      name: '',
       questions: [''],
     },
   });
@@ -43,15 +48,35 @@ export function CreateForm() {
   }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[300px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    if (!publicKey) {
+      toast({
+        title: 'You must connect your wallet to create a survey.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    fetch('/api', {
+      method: 'POST',
+      body: JSON.stringify({ ...data, owner: publicKey }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        // TODO: run aleo contract to create survey
+        toast({
+          title: 'Your survey was created.',
+        });
+        router.push(`/surveys/${res.id}`);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: 'There was an error creating your survey.',
+          description: err.message,
+          variant: 'destructive',
+        });
+      });
   }
 
   return (
@@ -59,11 +84,11 @@ export function CreateForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:w-[360px] w-full">
         <FormField
           control={form.control}
-          name="title"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Survey title" {...field} />
+                <Input placeholder="Survey name" {...field} />
               </FormControl>
               <FormMessage className="text-xs" />
             </FormItem>
